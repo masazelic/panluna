@@ -30,7 +30,7 @@
   </a>
 </p>
 
-Copyright (C) 2025 ETH Zurich, Switzerland. SPDX-License-Identifier: Apache-2.0. See LICENSE file for details.
+Copyright (C) 2025-2026 ETH Zurich, Switzerland. SPDX-License-Identifier: Apache-2.0. See LICENSE file for details.
 
 Authors: Thorir Mar Ingolfsson, Anna Tegon, Berkay Döner, Xiaying Wang, Matteo Fasulo, Danaé Broustail, Yawei Li & Luca Benini.
 
@@ -462,3 +462,14 @@ If you find this work useful, please cite the respective papers:
 This project is licensed under the Apache License 2.0. See the [LICENSE](./LICENSE) file for details.
 
 **Note on model weights:** Pretrained weights are hosted at <https://huggingface.co/PulpBio/FEMBA>, <https://huggingface.co/PulpBio/LUNA>, <https://huggingface.co/PulpBio/TinyMyo>, and <https://huggingface.co/PulpBio/LuMamba> and licensed under **CC BY-ND 4.0**. You may use and redistribute the **unmodified** weights with attribution. Redistribution of **modified** weights is not permitted. To upstream improvements, please open a PR; accepted changes will be released as **official** checkpoints.
+
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=pulp-bio%2Fbiofoundation&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=pulp-bio/biofoundation&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=pulp-bio/biofoundation&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=pulp-bio/biofoundation&type=date&legend=bottom-right" />
+ </picture>
+</a>
