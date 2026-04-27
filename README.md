@@ -502,6 +502,15 @@ If you find this work useful, please cite the respective papers:
       primaryClass={cs.AI},
       url={https://arxiv.org/abs/2603.19100}, 
 }
+@misc{zelic2026panluna,
+      title={PanLUNA: An Efficient and Robust Query-Unified Multimodal Model for Edge Biosignal Intelligence}, 
+      author={Marija Zelic and Anna Tegon and Yawei Li and Thorir Mar Ingolfsson},
+      year={2026},
+      eprint={2604.04297},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2604.04297}, 
+}
 ```
 
 ## License
