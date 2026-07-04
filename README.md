@@ -273,6 +273,7 @@ python -u run_train.py +experiment=PanLUNA_finetune \
 * Adapt configuration file `config/experiment/PanLUNA_finetune.yaml` to your specific task with correct data module (for unimodal experiments `config/data_module/finetune_data_module_unimodal_PanLUNA` or multimodal experiments `config/data_module/finetune_data_module_multimodal_PanLUNA`), classification type (binary `bc`, multi-class `mcc` and mulit-label `mlp`) and change `model.num_classes` accordingly. For different fine-tuning strategies adjust `finetuning.mode` parameter with `lora` for Low-Rank Adaptation, `freeze_encoder` for frozen backbone or select `full` for complete adaptation. 
   * Ensure `data_module:train/test/val` are initialized with the compatible dataset class. Leverage `config/data_module/finetune_data_module_multimodal_PanLUNA:data_module.train.channel_groups` to specify channels available in the dataset and `channel_start`/`channel_end` to tweak the used subset.
   * Configuration file includes sufficient `#CHANGEME` tags and further instructions for a working example.
+* Results on the addtional cross-modal experiments provided in the `docs/model/PanLUNA.md`.
 
 ## Features
 
