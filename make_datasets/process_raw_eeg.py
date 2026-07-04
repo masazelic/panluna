@@ -1,5 +1,5 @@
 #*----------------------------------------------------------------------------*
-#* Copyright (C) 2025 ETH Zurich, Switzerland                                 *
+#* Copyright (C) 2025-2026 ETH Zurich, Switzerland                            *
 #* SPDX-License-Identifier: Apache-2.0                                        *
 #*                                                                            *
 #* Licensed under the Apache License, Version 2.0 (the "License");            *
@@ -89,6 +89,10 @@ def init_label_array(mode, n_channels, n_times):
     elif mode == "MultiLabel":
         # Two dimensions: (n_channels, n_times)
         return np.zeros((n_channels, n_times), dtype=np.int8)
+    elif mode == "MultiClass":
+        # Same shape as MultiLabel; the per-channel 0..5 array is collapsed to a
+        # single scalar label per segment at windowing time.
+        return np.zeros((n_channels, n_times), dtype=np.int8)
     else:
         raise ValueError(f"Unknown mode: {mode}")
     
@@ -124,6 +128,11 @@ def apply_csv_annotations(mode, df_art, label_array, channel_map, sfreq, n_times
                 label_array[ch_idx, start_ix:stop_ix] = 1
         elif mode == "MultiLabel":
             # Find which group label this belongs to; if not found => 0
+            label_code = MULTILABEL_MAP.get(label_str, 0)
+            label_array[ch_idx, start_ix:stop_ix] = label_code
+        elif mode == "MultiClass":
+            # Same per-channel labeling as MultiLabel (0..5); collapsed to a
+            # single segment-level label later.
             label_code = MULTILABEL_MAP.get(label_str, 0)
             label_array[ch_idx, start_ix:stop_ix] = label_code
 
@@ -278,6 +287,22 @@ def process_and_dump_file(params):
                                 found_label = val
                         chunk_label[ch] = found_label
                 
+                elif MODE == "MultiClass":
+                    # Segment-level single label in {0..5}. Collapse all channels:
+                    #   - only background       => 0
+                    #   - exactly one artifact  => that class (1..5)
+                    #   - two or more artifacts => discard the (ambiguous) segment
+                    y_chunk = label_array[:, start:end] # 2D array
+                    unique_vals = set(y_chunk.flatten())
+                    if unique_vals == {0}:
+                        chunk_label = 0
+                    else:
+                        artifact_labels = unique_vals - {0}
+                        if len(artifact_labels) == 1:
+                            chunk_label = int(artifact_labels.pop())
+                        else:
+                            continue
+
                 else:
                     raise ValueError(f"Invalid mode {MODE} specified for TUAR processing.")
 
@@ -406,7 +431,7 @@ def main():
         "--mode", 
         type=str, 
         default="Binary", 
-        choices=["Binary", "MultiBinary", "MultiLabel"],
+        choices=["Binary", "MultiBinary", "MultiLabel", "MultiClass"],
         help="Labeling mode for TUAR dataset (default: Binary)."
     )
     args = parser.parse_args()
