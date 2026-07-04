@@ -146,3 +146,33 @@ State-of-the-art on HMC; surpasses PhysioOmni by +1.27% balanced accuracy.
 | CSN | 0.9505 |
 
 State-of-the-art on PTB-XL Super and CSN. QAT INT8 recovers ≥96% of FP32 AUROC across all tasks; INT2 weights achieve up to 16× storage reduction with graceful degradation.
+
+### Additional Cross-Modal Results
+- We provide additional evaluation on PPG-only and cross-modal ECG+PPG combination leveraging WESAD stress detection dataset in 2-class and 4-class classification setup according to definition in the [PulsePPG](https://arxiv.org/pdf/2502.01108).
+
+| Model | Size | WESAD (2) AUROC ↑ | WESAD (2) AUC-PR ↑ | WESAD (4) AUROC ↑ | WESAD (4) AUC-PR ↑ |
+|---|---:|---:|---:|---:|---:|
+| *Supervised Models* ||||| |
+| ResNet-26 | – | 0.3974 | 0.2590 | 0.4662 | 0.2641 |
+| Random Forest | – | 0.5374 | 0.3173 | 0.7060 | 0.4811 |
+| *General Time-series FMs* ||||| |
+| Chronos | 200M | 0.8878 | 0.7530 | **0.8751** | **0.7443** |
+| MOMENT | 385M | <u>0.9583</u> | <u>0.9196</u> | 0.7491 | 0.5304 |
+| *PPG FMs* ||||| |
+| Pulse-PPG | 28.5M | **0.9687** | **0.9410** | 0.7807 | 0.5671 |
+| Light Pulse-PPG | 5.7M | 0.9504 | 0.8764 | 0.6655 | 0.4667 |
+| PaPaGei | 5.7M | 0.8043 | 0.6465 | 0.7684 | 0.5205 |
+| **PanLUNA (FE) - PPG** | **5.4M** | 0.8747 ± 0.0046 | 0.7914 ± 0.0073 | <u>0.7882 ± 0.0102</u> | <u>0.6314 ± 0.0233</u> |
+| **PanLUNA (FE) - PPG+ECG** | **5.4M** | 0.8957 ± 0.0302 | 0.8616 ± 0.0394 | 0.7820 ± 0.0329 | 0.5682 ± 0.0372 | 
+
+#### Key observations
+
+- In the binary PPG-only setting, PanLUNA trails Pulse-PPG, but outperforms PaPaGei, a PPG-specific foundation model of comparable size.
+
+- The gap to Pulse-PPG may reflect differences in pretraining data: Pulse-PPG is pretrained on wearable-field PPG, while PanLUNA and PaPaGei use clinical PPG signals.
+
+- Adding ECG to PPG improves PanLUNA in the binary setup without increasing model size, raising AUROC from 0.8747 to 0.8957 and AUC-PR from 0.7914 to 0.8616.
+
+- In the 4-class setting, PanLUNA achieves the strongest results among PPG-based foundation models under 10M parameters, with especially large gains over Light Pulse-PPG in AUC-PR.
+
+- The PPG+ECG setting does not consistently improve over PPG-only in the 4-class case, suggesting dataset- and modality-specific effects.
