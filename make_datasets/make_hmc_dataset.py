@@ -160,12 +160,12 @@ def process_split(signal_files, annotation_files, output_dir, split):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME')
 
     args = parser.parse_args()
-    input_dir = Path(args.input_dir)
-    output_dir = args.output_dir
+    input_dir = Path(args.prepath)
+    output_dir = args.output_path
 
     # List all the files in the directory
     files = [f for f in input_dir.rglob('*.edf')]
