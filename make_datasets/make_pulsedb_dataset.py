@@ -132,16 +132,16 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Process VitalDB .mat files and save as pickle files.")
     parser.add_argument('--dataset', type=str, default='VitalDB', help='Either VitalDB or MimicDB.')
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME', help='Directory containing VitalDB .mat files.')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME', help='Directory to save processed pickle files.')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME', help='Directory containing VitalDB .mat files.')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME', help='Directory to save processed pickle files.')
     parser.add_argument('--sampling_rate', type=int, default=125, help='Original sampling rate of the signals.')
     parser.add_argument('--upsampling_fs', type=int, default=256, help='Desired upsampling frequency.')
     parser.add_argument('--split_signal', type=int, default=5, help='Length of segments to split the signals into (in seconds). If None, no splitting is done.')
 
     args = parser.parse_args()
     dataset = args.dataset
-    input_dir = Path(args.input_dir)
-    output_dir = Path(args.output_dir)
+    input_dir = Path(args.prepath)
+    output_dir = Path(args.output_path)
     sampling_rate = args.sampling_rate
     upsampling_fs = args.upsampling_fs
     split_signal = args.split_signal
