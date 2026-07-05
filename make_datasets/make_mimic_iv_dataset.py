@@ -110,18 +110,22 @@ def loading_and_processing_parallel(files, output_dir, downsampling_fs, split_si
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Process MIMIC-IV-ECG .hea and .dat files and save as .h5 files.")
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME', help='Directory containing MIMIC-IV-ECG files.')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME', help='Directory to save processed .h5 files.')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME', help='Directory containing MIMIC-IV-ECG files.')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME', help='Directory to save processed .h5 files.')
+    parser.add_argument('--collapse_pickle', type=str, default='#CHANGEME', help='Pickle file with collected samples for faster reading.')
     parser.add_argument('--downsampling_fs', type=int, default=256, help='Desired downsampling frequency.')
     parser.add_argument('--split_signal', type=int, default=None, help='Length of segments to split the signals into (in seconds). If None, no splitting is done.')
 
     args = parser.parse_args()
 
-    if os.path.exists('/scratch2/msc25h9/mimic-iv-ecg-files.pkl'):
-        with open('/scratch2/msc25h9/mimic-iv-ecg-files.pkl', 'rb') as f:
+    if os.path.exists(args.collapse_pickle):
+        with open(args.collapse_pickle, 'rb') as f:
             files = pickle.load(f)
     else:
-        result = subprocess.run(["find", args.input_dir, "-maxdepth", str(5), "-type", "f", "-name", "*.hea"], stdout=subprocess.PIPE, text=True)
+        # If you run for the first time, this will create the pickle file 
+        result = subprocess.run(["find", args.prepath, "-maxdepth", str(5), "-type", "f", "-name", "*.hea"], stdout=subprocess.PIPE, text=True)
         files = result.stdout.splitlines()
+        with open(args.collapse_pickle, 'wb') as f:
+        pickle.dump(files, f)
 
-    loading_and_processing_parallel(files, args.output_dir, args.downsampling_fs, args.split_signal)
+    loading_and_processing_parallel(files, args.output_path, args.downsampling_fs, args.split_signal)
