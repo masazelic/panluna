@@ -12,7 +12,7 @@ final_validate: True
 final_test: True
 finetune_pretrained: True
 resume: False
-find_unused_parameters: True     
+find_unused_parameters: False # Must be set to True for LoRA fine-tuning     
 
 label_smoothing: 0
 layerwise_lr_decay: 0.75
@@ -23,7 +23,8 @@ scheduler_type: cosine
 # mcc - multiclass classification
 classification_type: "#CHANGEME" 
 
-pretrained_checkpoint_path: "#CHANGEME"
+pretrained_checkpoint_path: null
+pretrained_safetensors_path: null # "#CHANGME"
 
 callbacks:
   progress_bar:
