@@ -74,7 +74,7 @@ def process_csv_files(args, csv_file, split_type):
         split_type (str): Type of split ('train', 'val', 'test').
     """
     # Make directory for this split if it doesn't exist
-    os.makedirs(os.path.join(args.output_dir, split_type), exist_ok=True)
+    os.makedirs(os.path.join(args.output_path, split_type), exist_ok=True)
     
     # Read the csv file
     print(f"Processing {csv_file}...")
