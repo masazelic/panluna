@@ -29,7 +29,7 @@ data_module:
   train:
     _target_: 'datasets.finetuning_unimodal_datasets_PanLUNA.FinetuningUnimodal_Dataset'
     hdf5_file: "#CHANGEME"
-    num_channels: 12 # example
+    num_channels: 12 # example for CSN dataset, change accordingly
     channels: ${dataset_types.csn.channels} # example
     location_fn: ${dataset_types.csn.location_fn}
     sensor_type: ${dataset_types.csn.sensor_type}
