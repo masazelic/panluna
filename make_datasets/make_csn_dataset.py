@@ -42,7 +42,7 @@ def process_csv_files(args, csv_file, split_type):
         split_type (str): Type of split ('train', 'val', 'test').
     """
     # Make directory for this split if it doesn't exist
-    os.makedirs(os.path.join(args.output_dir, split_type), exist_ok=True)
+    os.makedirs(os.path.join(args.output_path, split_type), exist_ok=True)
 
     # Read the csv file
     print(f"Processing {csv_file}...")
@@ -52,7 +52,7 @@ def process_csv_files(args, csv_file, split_type):
 
         # Load the signal
         try:
-            file_path = os.path.join(args.input_dir, row['ecg_path'].lstrip('/')).split('.')[0]
+            file_path = os.path.join(args.prepath, row['ecg_path'].lstrip('/')).split('.')[0]
             signal, fields = wfdb.rdsamp(file_path)
             ecg = np.array(signal).T # transpose to have shape (channels, samples)
 
@@ -68,7 +68,7 @@ def process_csv_files(args, csv_file, split_type):
             # Write splits to pickle files
             #for num, split in enumerate(splits):
             data_dict = {"X": processed_ecg, "y": y}
-            dump_path = os.path.join(args.output_dir, split_type, f'chapman-{idx}.pkl')
+            dump_path = os.path.join(args.output_path, split_type, f'chapman-{idx}.pkl')
             
             with open(dump_path, "wb") as f:
                 pickle.dump(data_dict, f)
@@ -91,7 +91,7 @@ def main_splitted(args):
     test_csv = os.path.join(args.csv_files_dir, 'chapman_test.csv')
 
     # Create output directory if it doesn't exist
-    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(args.output_path, exist_ok=True)
     
     # Write each csv file into pickle files with X and y
     process_csv_files(args, train_csv, split_type = 'train')
@@ -101,11 +101,11 @@ def main_splitted(args):
     # Finally, write to HDF5
     to_do = [f'train', f'val', f'test']
     for td in to_do:
-        if os.path.exists(output_dir + '/' + td + ".h5"):
+        if os.path.exists(args.output_path + '/' + td + ".h5"):
             print(f"File {td}.h5 already exists!")
         else:
             print(f"Creating file {td}.h5.")
-            create_hdf5(output_dir + "/" + td, output_dir + "/" + td + ".h5")
+            create_hdf5(args.output_path + "/" + td, args.output_path + "/" + td + ".h5")
 
     
 def create_hdf5(source_dir, target_file, finetune=True, group_size=1000):
@@ -145,13 +145,12 @@ def create_hdf5(source_dir, target_file, finetune=True, group_size=1000):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Process Chapman-Shaoxing ECG dataset and save as pickle files.")
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME', help='Directory containing Chapman-Shaoxing ECG WFDB files.')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME', help='Directory to save processed pickle files.')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME', help='Directory containing Chapman-Shaoxing ECG WFDB files.')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME', help='Directory to save processed pickle files.')
     parser.add_argument('--csv_files_dir', type=str, default='#CHANGEME')
     parser.add_argument('--downsample_fs', type=int, default=256, help='Desired downsampling frequency. If None, no downsampling is done.')
 
     args = parser.parse_args()
-    output_dir = args.output_dir
 
     main_splitted(args)
     
