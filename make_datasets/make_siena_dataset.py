@@ -105,13 +105,13 @@ def process_and_save_files_to_hdf5(file_paths, output_dir):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME', help='Input directory containing raw EDF files')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME', help='Input directory containing raw EDF files')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME')
 
     # Parse arguments
     args = parser.parse_args()
-    input_dir = args.input_dir
-    output_dir = args.output_dir
+    input_dir = args.prepath
+    output_dir = args.output_path
 
     # Find all EDF files in the input directory
     input_dir = Path(input_dir)
