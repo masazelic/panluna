@@ -76,7 +76,7 @@ def process_csv_files(args, csv_file, setup, split_type):
         split (str): One of ['train', 'val', 'test'].
     """
     # Make output directory for this setup if it doesn't exist
-    os.makedirs(os.path.join(args.output_dir, setup, split_type), exist_ok=True)
+    os.makedirs(os.path.join(args.output_path, setup, split_type), exist_ok=True)
     
     # Read the csv file
     print(f"Processing {csv_file}...")
@@ -85,7 +85,7 @@ def process_csv_files(args, csv_file, setup, split_type):
     for idx, row in tqdm(df.iterrows(), total=df.shape[0]):
 
         # Load the signal, we always use the 500 Hz version
-        file_path = os.path.join(args.input_dir, row['filename_hr'])
+        file_path = os.path.join(args.prepath, row['filename_hr'])
         signal, _ = wfdb.rdsamp(file_path)
 
         # Preprocess the signal 
@@ -104,7 +104,7 @@ def process_csv_files(args, csv_file, setup, split_type):
             raise ValueError("Invalid setup provided.")
                 
         data_dict = {"X": processed_signal, "y": y}
-        dump_path = os.path.join(args.output_dir, setup, split_type, f'ptb-xl-{idx}.pkl')
+        dump_path = os.path.join(args.output_path, setup, split_type, f'ptb-xl-{idx}.pkl')
         
         with open(dump_path, "wb") as f:
             pickle.dump(data_dict, f)
@@ -125,7 +125,7 @@ def main_splitted(args, setup):
     test_csv = os.path.join(args.csv_files_dir, setup, f'ptbxl_{setup}_test.csv')
 
     # Create output directory for this setup if it doesn't exist
-    os.makedirs(os.path.join(args.output_dir, setup), exist_ok=True)
+    os.makedirs(os.path.join(args.output_path, setup), exist_ok=True)
 
     # Write each csv into pickle files with X and y
     process_csv_files(args, train_csv, setup, split_type='train')
@@ -135,17 +135,17 @@ def main_splitted(args, setup):
     # Finally, write to HDF5
     to_do = ['train', 'val', 'test']
     for td in to_do:
-        if os.path.exists(args.output_dir + '/' + setup + "/" + td + "/" + ".h5"):
+        if os.path.exists(args.output_path + '/' + setup + "/" + td + "/" + ".h5"):
             print(f"File {td}.h5 already exists!")
         else:
             print(f"Creating file {td}.h5.")
-            create_hdf5(args.output_dir + "/" + setup + "/" + td, args.output_dir + "/" + setup + "/" + td + ".h5")
+            create_hdf5(args.output_path + "/" + setup + "/" + td, args.output_path + "/" + setup + "/" + td + ".h5")
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Process PTB-XL dataset files and save as pickle.")
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME')
     parser.add_argument('--csv_files_dir', type=str, default='#CHANGEME')
     parser.add_argument('--sampling_rate', type=int, default=500)
     parser.add_argument('--downsampling_fs', type=int, default=256)
