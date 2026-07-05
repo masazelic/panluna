@@ -127,14 +127,14 @@ def loading_and_processing_parallel(files, output_dir, downsampling_fs, split_si
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Process Code15 HDF5 files and save as .h5 files.")
-    parser.add_argument('--input_dir', type=str, default='#CHANGEME', help='Directory contraining MIMIC-IV-ECG files.')
-    parser.add_argument('--output_dir', type=str, default='#CHANGEME', help='Directory to save processed .h5 files.')
+    parser.add_argument('--prepath', type=str, default='#CHANGEME', help='Directory contraining MIMIC-IV-ECG files.')
+    parser.add_argument('--output_path', type=str, default='#CHANGEME', help='Directory to save processed .h5 files.')
     parser.add_argument('--downsampling_fs', type=int, default=256, help='Desired downsampling frequency.')
     parser.add_argument('--split_signal', type=int, default=5, help='Length of segments to split the signals into (in seconds). If None, no splitting is done.')
     
     args = parser.parse_args()
-    input_dir = args.input_dir
-    output_dir = args.output_dir
+    input_dir = args.prepath
+    output_dir = args.output_path
     downsampling_fs = args.downsampling_fs
     split_signal = args.split_signal
     
