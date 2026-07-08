@@ -126,6 +126,6 @@ if __name__ == "__main__":
         result = subprocess.run(["find", args.prepath, "-maxdepth", str(5), "-type", "f", "-name", "*.hea"], stdout=subprocess.PIPE, text=True)
         files = result.stdout.splitlines()
         with open(args.collapse_pickle, 'wb') as f:
-        pickle.dump(files, f)
+            pickle.dump(files, f)
 
     loading_and_processing_parallel(files, args.output_path, args.downsampling_fs, args.split_signal)
