@@ -130,7 +130,7 @@ class MaskTask(pl.LightningModule):
             print("!!! Model output X_RECONSTRUCTED contains NaN at step", self.global_step, "!!!")
             raise ValueError("NaN detected in model output.")
         # Compute loss only on masked parts
-        masked_loss, unmasked_loss = self.criterion(x_reconstructed, x_original, mask, self.patch_size[1])
+        masked_loss, unmasked_loss = self.criterion(x_reconstructed, x_original, mask)
         loss = masked_loss + self.unmasked_loss_coeff * unmasked_loss
         if self.hparams.query_specialization_criterion is not None:
             query_specialization_loss = self.query_specialization_criterion(attention_scores)
@@ -162,7 +162,7 @@ class MaskTask(pl.LightningModule):
 
         x_reconstructed, x_original, attention_scores = self.model(X, mask, channel_locations, channel_names)
 
-        masked_loss, unmasked_loss = self.criterion(x_reconstructed, x_original, mask, self.patch_size[1])
+        masked_loss, unmasked_loss = self.criterion(x_reconstructed, x_original, mask)
         loss = masked_loss + self.unmasked_loss_coeff * unmasked_loss
 
         if self.hparams.query_specialization_criterion is not None:
