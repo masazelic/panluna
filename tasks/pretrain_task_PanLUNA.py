@@ -160,7 +160,7 @@ class MaskTask(pl.LightningModule):
         if self.normalize:
             X = self.normalize_fct(X)
 
-        x_reconstructed, x_original, attention_scores = self.model(X, mask, channel_locations, channel_names)
+        x_reconstructed, x_original, attention_scores = self.model(X, mask, channel_locations, sensor_type, channel_names)
 
         masked_loss, unmasked_loss = self.criterion(x_reconstructed, x_original, mask)
         loss = masked_loss + self.unmasked_loss_coeff * unmasked_loss
