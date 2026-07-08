@@ -234,7 +234,7 @@ Tips:
   - Ensure `data_module:train/test/val` are initialized with the compatible dataset class.
   - Configuration file includes sufficient `#CHANGEME` tags and further instructions for a working example.
 
-## Why PanLUNA?
+#### Why PanLUNA?
 
 * Extending LUNA's channel-unification mechanism from topology invariance to **cross-modal fusion**, jointly processing EEG, ECG, and PPG within a single shared encoder via sensor-type embeddings - no modality-specific backbones, no paired multimodal data required during pretraining.
 * Pretrained on ~40,000 hours of heterogeneous biosignal data (TUEG, Siena, MIMIC-IV, CODE-15%, PulseDB) with a masked signal reconstruction objective.
@@ -242,12 +242,12 @@ Tips:
 
 ➡️ Model hub: __https://huggingface.co/PulpBio/PanLUNA__ 📄 Model card: __[PanLUNA on Hugging Face](https://huggingface.co/PulpBio/PanLUNA)__ — variants, configs, and fine-tuning walkthrough. 📜 Weights license: CC BY-ND 4.0 (use + redistribute unmodified weights with attribution; no redistribution of modified weights) 🧑‍🍳 PR-gated improvements: If you fine-tune internally and want your variant to become an official PanLUNA release, open a PR with configs, logs, and evals. We'll review; if it looks good, we'll retrain/validate and publish an official PanLUNA checkpoint.
 
-### What you'll find on the hub
+**What you'll find on the hub**
 
 * Pre-trained checkpoint.
 * Instructions to get started on fine-tuning experiments.
 
-### Quick download with `huggingface_hub`:
+Quick download with `huggingface_hub`:
 
 ```
 pip install huggingface_hub
@@ -267,7 +267,7 @@ python -u run_train.py +experiment=PanLUNA_finetune \
   pretrained_safetensors_path=/absolute/path/to/checkpoints/PanLUNA/PanLUNA.safetensors
 ```
 
-### Tips:
+Tips:
 
 * Data preprocessing scripts are provided in `/make_datasets` for various downstream datasets. Download the corresponding dataset, locate its preprocessing script by name matching, and adjust key parameters.
 * Adapt configuration file `config/experiment/PanLUNA_finetune.yaml` to your specific task with correct data module (for unimodal experiments `config/data_module/finetune_data_module_unimodal_PanLUNA` or multimodal experiments `config/data_module/finetune_data_module_multimodal_PanLUNA`), classification type (binary `bc`, multi-class `mcc` and mulit-label `mlp`) and change `model.num_classes` accordingly. For different fine-tuning strategies adjust `finetuning.mode` parameter with `lora` for Low-Rank Adaptation, `freeze_encoder` for frozen backbone or select `full` for complete adaptation. 
