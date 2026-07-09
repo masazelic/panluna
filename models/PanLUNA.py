@@ -305,7 +305,7 @@ class PanLUNA(nn.Module):
             return x_classified, x_original
         else:
             channel_emb = self.channel_emb(channel_names)
-            channel_emb = channel_emb.repeat(num_patches, 1, 1)
+            channel_emb = channel_emb.repeat_interleave(num_patches, dim=0)
             decoder_queries = channel_locations_emb + channel_emb + sensor_type # (B*N, C, D)
             x_reconstructed = self.decoder_head(x_latent, decoder_queries) 
             return x_reconstructed, x_original, attention_scores

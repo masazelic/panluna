@@ -41,7 +41,7 @@ input_normalization:
   normalize: True
 
 finetuning:
-  mode: "lora" # options: "full", "freeze_encoder", "lora"
+  mode: "freeze_encoder" # options: "full", "freeze_encoder", "lora"
   lora:
     r: 16
     alpha: 32

@@ -29,6 +29,8 @@ from torchmetrics.classification import (
     Accuracy, Precision, Recall, AUROC,
     AveragePrecision, CohenKappa, F1Score
 )
+from collections import OrderedDict
+from safetensors.torch import load_file
 from peft import LoraConfig, get_peft_model, TaskType
 
 class ChannelWiseNormalize:
@@ -146,6 +148,60 @@ class FinetuneTask(pl.LightningModule):
             print("Loading pretrained checkpoint")
             ckpt = torch.load(model_ckpt)
             state_dict = ckpt['state_dict']
+        
+            # Remove decoder head and channel embedding weights since they are not needed for fine-tuning
+            state_dict = {k: v for k, v in state_dict.items() if 'decoder_head' not in k and "channel_emb" not in k}
+        
+            new_state_dict = {}
+            for k, v in state_dict.items():
+                if k.startswith("model."):
+                    new_state_dict[k[len("model."):]] = v
+                else:
+                    new_state_dict[k] = v
+          
+            missing, unexpected = self.model.load_state_dict(new_state_dict, strict=False)
+            print("missing:", missing)
+            print("unexpected:", unexpected)
+        
+        if self.hparams.finetuning.mode == "lora":
+            print("=> Applying LoRA strategy...")
+            lora_cfg = self.hparams.finetuning.lora
+            
+            config = LoraConfig(
+                task_type=TaskType.FEATURE_EXTRACTION,
+                r=lora_cfg.r,
+                lora_alpha=lora_cfg.alpha,
+                lora_dropout=lora_cfg.dropout, 
+                target_modules=lora_cfg.target_modules
+            )
+            
+            self.model = get_peft_model(self.model, config)
+            self.model.print_trainable_parameters()
+            
+            for p in self.model.base_model.model.classifier.parameters():
+                p.requires_grad=True                
+
+        elif self.hparams.finetuning.mode == "freeze_encoder":
+            print("=> Applying Freeze Encoder strategy...")
+        
+            for name, param in self.model.named_parameters():
+                param.requires_grad = False
+                if 'classifier' in name:
+                    param.requires_grad = True
+                    
+        else:
+            print("=> Applying Full Fine-tuning strategy...")
+
+        print("Pretrained model ready.")
+        
+    def load_safetensors_checkpoint(self, model_ckpt):
+        """
+        Load a pretrained model checkpoint and unfreeze specific layers for fine-tuning.
+        """
+        if model_ckpt is not None:
+            assert self.model.classifier is not None
+            print("Loading pretrained checkpoint")
+            state_dict = load_file(model_ckpt)
         
             # Remove decoder head and channel embedding weights since they are not needed for fine-tuning
             state_dict = {k: v for k, v in state_dict.items() if 'decoder_head' not in k and "channel_emb" not in k}
